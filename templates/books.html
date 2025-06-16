@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Books - Library System{% endblock %}
+{% block content %}
+  <h1>Books</h1>
+
+  <!-- Search Form -->
+  <form method="get" style="margin-bottom: 16px;">
+    <input type="text" name="search" placeholder="Search books..." value="{{ search }}">
+    <button type="submit" class="btn btn-edit">Search</button>
+    {% if search %}
+      <a href="/books" class="btn">Clear</a>
+    {% endif %}
+  </form>
+
+  <!-- Add Book Button -->
+  <button class="btn btn-edit" onclick="document.getElementById('addBookModal').style.display='block'">Add a Book</button>
+
+  <!-- Add Book Modal -->
+  <div id="addBookModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('addBookModal').style.display='none'">&times;</span>
+      <h2>Add a Book</h2>
+      <form method="POST">
+        <input name="title" placeholder="Title" required>
+        <input name="author" placeholder="Author" required>
+        <input name="genre" placeholder="Genre" required>
+        <input name="year" placeholder="Year" required>
+        <input name="copies" placeholder="Copies" required>
+        <button type="submit" class="btn btn-edit">Add Book</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Book Modal -->
+  <div id="editBookModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="document.getElementById('editBookModal').style.display='none'">&times;</span>
+      <h2>Edit Book</h2>
+      <form id="editBookForm" method="POST">
+        <input type="hidden" name="edit_book_id" id="edit_book_id">
+        <input name="edit_title" id="edit_title" placeholder="Title" required>
+        <input name="edit_author" id="edit_author" placeholder="Author" required>
+        <input name="edit_genre" id="edit_genre" placeholder="Genre" required>
+        <input name="edit_year" id="edit_year" placeholder="Year" required>
+        <input name="edit_copies" id="edit_copies" placeholder="Copies" required>
+        <button type="submit" class="btn btn-edit">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <table>
+    <tr>
+      <th>Title</th><th>Author</th><th>Genre</th><th>Year</th><th>Copies</th><th>Action</th>
+    </tr>
+    {% for book in books %}
+    <tr>
+      <td>{{ book.title }}</td>
+      <td>{{ book.author }}</td>
+      <td>{{ book.genre }}</td>
+      <td>{{ book.published_year }}</td>
+      <td>{{ book.copies_available }}</td>
+      <td>
+        <a href="/delete_book/{{ book.book_id }}" class="btn btn-delete">Delete</a>
+        <button type="button" class="btn btn-edit"
+          onclick="openEditModal('{{ book.book_id }}', '{{ book.title|escape }}', '{{ book.author|escape }}', '{{ book.genre|escape }}', '{{ book.published_year }}', '{{ book.copies_available }}')">
+          Edit
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0; top: 0; width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 80px auto; padding: 20px;
+      border: 1px solid #888; width: 350px;
+      border-radius: 10px;
+      position: relative;
+    }
+    .close {
+      color: #aaa; position: absolute;
+      top: 12px; right: 16px;
+      font-size: 28px; font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover, .close:focus { color: #333; text-decoration: none; }
+    .modal-content h2 { margin-top: 0; }
+    .modal-content input { width: 95%; margin: 5px 0 10px 0; }
+    .modal-content button { width: 100%; }
+
+    /* New button styles */
+    .btn {
+      display: inline-block;
+      padding: 6px 16px;
+      margin-right: 6px;
+      border: none;
+      border-radius: 4px;
+      background: #333;
+      color: #fff;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-delete {
+      background: #d9534f;
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+    .btn-delete:hover {
+      background: #b52a25;
+      color: #fff !important;
+    }
+    .btn-edit {
+      background: #333;
+    }
+    .btn-edit:hover {
+      background: #222;
+    }
+  </style>
+
+  <script>
+    function openEditModal(id, title, author, genre, year, copies) {
+      document.getElementById('editBookModal').style.display = 'block';
+      document.getElementById('edit_book_id').value = id;
+      document.getElementById('edit_title').value = title;
+      document.getElementById('edit_author').value = author;
+      document.getElementById('edit_genre').value = genre;
+      document.getElementById('edit_year').value = year;
+      document.getElementById('edit_copies').value = copies;
+    }
+    // Close modal on click outside
+    window.onclick = function(event) {
+      var addModal = document.getElementById('addBookModal');
+      var editModal = document.getElementById('editBookModal');
+      if (event.target == addModal) addModal.style.display = "none";
+      if (event.target == editModal) editModal.style.display = "none";
+    }
+  </script>
+{% endblock %}

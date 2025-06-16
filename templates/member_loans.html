@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ member.name }}'s Loan History - Library System{% endblock %}
+{% block content %}
+  <h1>Loan History for {{ member.name }}</h1>
+  <p>Email: {{ member.email }}</p>
+  <p>Member since: {{ member.membership_date }}</p>
+
+  <h2>Loan a Book to {{ member.name }}</h2>
+<form method="get" action="/member/{{ member.member_id }}" style="margin-bottom: 12px;">
+  <input type="text" name="search_book" placeholder="Search books to loan..." value="{{ search_book }}">
+  <button type="submit">Search</button>
+  {% if search_book %}
+    <a href="/member/{{ member.member_id }}">(clear)</a>
+  {% endif %}
+</form>
+
+<form method="POST">
+  <select name="book_id" required>
+    <option value="">Select Book</option>
+    {% for book in books %}
+      <option value="{{ book.book_id }}">{{ book.title }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Loan</button>
+  {% if books|length == 0 %}
+    <div style="color: red; margin-top: 10px;">No books found matching your search.</div>
+  {% endif %}
+</form>
+
+
+  <h2>Books Borrowed</h2>
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Loan Date</th>
+      <th>Return Date</th>
+      <th>Action</th>
+    </tr>
+    {% for loan in loans %}
+    <tr>
+      <td>{{ loan.title }}</td>
+      <td>{{ loan.loan_date }}</td>
+      <td>{{ loan.return_date if loan.return_date else "Active" }}</td>
+      <td>
+        {% if not loan.return_date %}
+          <a href="/return_loan/{{ loan.loan_id }}?from_member={{ member.member_id }}">Return</a>
+        {% else %}
+          Returned
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+    {% if loans|length == 0 %}
+    <tr>
+      <td colspan="4">No loans yet.</td>
+    </tr>
+    {% endif %}
+  </table>
+  <p><a href="/members">Back to Members</a></p>
+{% endblock %}

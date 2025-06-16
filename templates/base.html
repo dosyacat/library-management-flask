@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}Library System{% endblock %}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f6f6f6; }
+    .navbar {
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      gap: 40px;
+      font-size: 1.5em;
+    }
+    .navbar a,
+    .navbar a:visited,
+    .navbar a:active {
+      color: #fff !important;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.2s;
+    }
+    .navbar a:hover {
+      color: #ffd700 !important;
+      text-decoration: underline;
+    }
+    .container {
+      padding: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      min-height: 90vh;
+    }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #aaa; padding: 8px 12px; }
+    th { background: #eee; }
+    form { margin-bottom: 20px; }
+    button, input[type="submit"] {
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    button:hover, input[type="submit"]:hover {
+      background: #222;
+    }
+    input, select {
+      padding: 5px 8px;
+      border-radius: 3px;
+      border: 1px solid #bbb;
+      margin-right: 7px;
+      font-size: 1em;
+    }
+    /* Non-navbar links */
+    .container a {
+      color: #2255a0;
+      font-weight: normal;
+      text-decoration: underline;
+    }
+    .container a:visited { color: #222266; }
+    .container a:hover { color: #003399; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="/">Home</a>
+    <a href="/books">Books</a>
+    <a href="/members">Members</a>
+    <a href="/loans">Loans</a>
+  </div>
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul style="background: #fff8c6; color: #a08000; padding: 12px 18px; border-radius: 5px; margin-bottom: 18px;">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>
